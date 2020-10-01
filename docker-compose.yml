@@ -1,0 +1,31 @@
+version: '3'
+
+networks:
+  test:
+    driver: bridge
+
+services:
+  nginx:
+    build:
+      context: ./docker
+      dockerfile: nginx.Dockerfile
+    container_name: nginx
+    ports:
+      - 80:80
+    networks:
+      - test
+    volumes:
+      - ./public:/var/www/html
+      - ./conf/conf.nginx:/etc/nginx/nginx.conf
+    depends_on:
+      - fpm
+
+  fpm:
+    build:
+      context: ./docker
+      dockerfile: fpm.Dockerfile
+    container_name: fpm
+    networks:
+      - test
+    volumes:
+      - ./public:/var/www/html
